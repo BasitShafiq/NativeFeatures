@@ -6,6 +6,7 @@ import '../providers/great_places.dart';
 import '../widgets/TakeImage.dart';
 import 'dart:io';
 import '../widgets/location_input.dart';
+import '../models/places.dart';
 
 class AddPlaces extends StatefulWidget {
   static const routeName = '/add-place';
@@ -14,18 +15,26 @@ class AddPlaces extends StatefulWidget {
 }
 
 class _AddPlacesState extends State<AddPlaces> {
-  File? _pickedImage;
+  File? _pickedImage = null;
+  Location? _selectedLocation = null;
+
   final _titleController = TextEditingController();
   void selectedImage(File pickedImage) {
     _pickedImage = pickedImage;
   }
 
+  void selectedPlace(double lat, double long) {
+    _selectedLocation = Location(latitude: lat, longitude: long);
+  }
+
   void savePlace() {
-    if (_titleController.text.isEmpty || _pickedImage == null) {
+    if (_titleController.text.isEmpty ||
+        _pickedImage == null ||
+        _selectedLocation == null) {
       return;
     }
     Provider.of<GreatPlacesProvider>(context, listen: false)
-        .addPlace(_titleController.text, _pickedImage!);
+        .addPlace(_titleController.text, _pickedImage!, _selectedLocation);
     Navigator.of(context).pop();
   }
 
@@ -37,9 +46,8 @@ class _AddPlacesState extends State<AddPlaces> {
         title: Text("Add Places"),
       ),
       body: SingleChildScrollView(
-        
         child: SizedBox(
-           width: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.9,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,7 +67,7 @@ class _AddPlacesState extends State<AddPlaces> {
                     SizedBox(height: 30),
                     ImageFile(selectedImage),
                     SizedBox(height: 30),
-                    LocationInput(),
+                    LocationInput(selectedPlace),
                   ],
                 ),
                 padding: EdgeInsets.all(13),
@@ -72,7 +80,8 @@ class _AddPlacesState extends State<AddPlaces> {
                     backgroundColor: MaterialStateProperty.all(Colors.amber),
                     elevation: MaterialStateProperty.all(0),
                     padding: MaterialStateProperty.all(EdgeInsets.all(11)),
-                    textStyle: MaterialStateProperty.all(TextStyle(fontSize: 20))),
+                    textStyle:
+                        MaterialStateProperty.all(TextStyle(fontSize: 20))),
               )
             ],
           ),

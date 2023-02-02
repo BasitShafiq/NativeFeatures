@@ -24,7 +24,7 @@ class _ImageFileState extends State<ImageFile> {
       return;
     }
     setState(() {
-      _storedImage = File(imageFile!.path);
+      _storedImage = File(imageFile.path);
     });
     WidgetsFlutterBinding.ensureInitialized();
     final dir = await sysPath.getApplicationDocumentsDirectory();

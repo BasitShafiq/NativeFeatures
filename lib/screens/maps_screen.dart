@@ -7,18 +7,35 @@ class MapsScreen extends StatefulWidget {
   final intialLocation;
   bool isSelected;
   MapsScreen(
-      {this.intialLocation =
-          const Location(latitude: 44, longitude: 69),
+      {this.intialLocation = const Location(latitude: 44, longitude: 69),
       this.isSelected = false});
   @override
   State<MapsScreen> createState() => _MapsScreenState();
 }
 
 class _MapsScreenState extends State<MapsScreen> {
+  late LatLng? selectedCordinates = null;
+  void selectedLocation(LatLng? cordinates) {
+    setState(() {
+      selectedCordinates = cordinates;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          if (widget.isSelected)
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop(selectedCordinates);
+              },
+              icon: Icon(
+                Icons.check,
+              ),
+            )
+        ],
         backgroundColor: Colors.indigo,
         title: Text("Google Maps"),
       ),
@@ -30,6 +47,17 @@ class _MapsScreenState extends State<MapsScreen> {
           ),
           zoom: 9,
         ),
+        onTap: widget.isSelected ? selectedLocation : null,
+        markers: selectedCordinates != null && widget.isSelected == false
+            ? {
+                Marker(
+                  markerId: MarkerId("M1"),
+                  position: selectedCordinates ??
+                      LatLng(widget.intialLocation.latitude,
+                          widget.intialLocation.longitude),
+                )
+              }
+            : {},
       ),
     );
   }

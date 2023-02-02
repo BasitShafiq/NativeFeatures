@@ -8,7 +8,7 @@ class DBHelper {
     final dbInstance = await DB.openDatabase(path.join(dbPath, 'places.db'),
         onCreate: (db, version) {
       db.execute(
-          'CREATE TABLE user_places(id TEXT PRIMARY KEY, title TEXT,image TEXT)');
+          'CREATE TABLE user_places(id TEXT PRIMARY KEY, title TEXT,image TEXT,loc_lat REAL , loc_lon REAL, address TEXT )');
     }, version: 1);
     dbInstance.insert(
       table,
@@ -22,8 +22,8 @@ class DBHelper {
     final dbInstance = await DB.openDatabase(path.join(dbPath, 'places.db'),
         onCreate: (db, version) {
       db.execute(
-          'CREATE TABLE user_places(id TEXT PRIMARY KEY, title TEXT,image TEXT)');
+          'CREATE TABLE user_places(id TEXT PRIMARY KEY, title TEXT,image TEXT,loc_lat REAL , loc_lon REAL, address TEXT)');
     }, version: 1);
-    return  dbInstance.query(table);
+    return dbInstance.query(table);
   }
 }
